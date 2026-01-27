@@ -5,7 +5,7 @@ import random
 
 def tuit_diario():
     try:
-        # Autenticación
+        # Autenticación estrictamente para v2 (Free)
         client = tweepy.Client(
             consumer_key=os.environ["API_KEY"],
             consumer_secret=os.environ["API_SECRET"],
@@ -13,18 +13,12 @@ def tuit_diario():
             access_token_secret=os.environ["ACCESS_SECRET"]
         )
 
-        # Verificamos quién es el bot
-        auth = tweepy.OAuth1UserHandler(
-            os.environ["API_KEY"], os.environ["API_SECRET"],
-            os.environ["ACCESS_TOKEN"], os.environ["ACCESS_SECRET"]
-        )
-        api = tweepy.API(auth)
-        user = api.verify_credentials()
-        print(f"Conectado como: {user.screen_name}")
-
-        # Intentar tuitear
+        # Leer archivo
         df = pd.read_csv('lyrics.csv')
         lyric = random.choice(df['Frase'].values)
+        
+        # Publicar (v2)
+        print("Intentando publicar en v2...")
         client.create_tweet(text=lyric)
         print("¡Tuit enviado con éxito!")
 
