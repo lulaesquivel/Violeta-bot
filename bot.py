@@ -1,29 +1,42 @@
-import tweepy
+import asyncio
 import os
-import pandas as pd
+import csv
 import random
+from twikit import Client
 
-def tuit_diario():
+async def main():
+    client = Client('en-US')
+    
     try:
-        # Autenticación estrictamente para v2 (Free)
-        client = tweepy.Client(
-            consumer_key=os.environ["API_KEY"],
-            consumer_secret=os.environ["API_SECRET"],
-            access_token=os.environ["ACCESS_TOKEN"],
-            access_token_secret=os.environ["ACCESS_SECRET"]
+        # 1. Login con tus Secrets
+        await client.login(
+            auth_info_1=os.environ.get('X_USERNAME'),
+            auth_info_2=os.environ.get('X_EMAIL'),
+            password=os.environ.get('X_PASSWORD')
         )
 
-        # Leer archivo
-        df = pd.read_csv('lyrics.csv')
-        lyric = random.choice(df['Frase'].values)
-        
-        # Publicar (v2)
-        print("Intentando publicar en v2...")
-        client.create_tweet(text=lyric)
-        print("¡Tuit enviado con éxito!")
+        # 2. Leer tu CSV de frases y keywords
+        frases_data = []
+        with open('lyrics.csv', mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                frases_data.append(row)
+
+        if not frases_data:
+            print("El archivo CSV está vacío.")
+            return
+
+        # 3. Lógica de publicación diaria (Frase al azar)
+        # Elegimos una fila al azar de tu lista
+        seleccionada = random.choice(frases_data)
+        tweet_text = seleccionada['Frase']
+
+        # 4. PUBLICAR
+        await client.create_tweet(text=tweet_text)
+        print(f"Publicado: {tweet_text}")
 
     except Exception as e:
-        print(f"Error detallado: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
-    tuit_diario()
+    asyncio.run(main())
