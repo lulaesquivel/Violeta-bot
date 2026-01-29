@@ -2,9 +2,9 @@ name: Bot Diario Violeta
 
 on:
   schedule:
-    - cron: '0 14 * * *'  # Las 11 AM de Argentina
-    - cron: '0 21 * * *'  # Las 18 PM de Argentina
-  workflow_dispatch:      # Permite que tú le des al botón cuando quieras
+    - cron: '0 14 * * *'  # 11 AM Argentina
+    - cron: '0 21 * * *'  # 18 PM Argentina
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,12 +16,12 @@ jobs:
       - name: Instalar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Instalar librerías
         run: |
           python -m pip install --upgrade pip
-          pip install twikit
+          pip install twikit==1.4.7
 
       - name: Ejecutar Bot
         env:
