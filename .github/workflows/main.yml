@@ -2,8 +2,9 @@ name: Bot Diario Violeta
 
 on:
   schedule:
-    - cron: '0 10 * * *' # Tuitea cada día a las 10:00 AM UTC (puedes cambiarlo)
-  workflow_dispatch:      # Esto te permite probarlo manualmente con un botón
+    - cron: '0 14 * * *'  # Las 11 AM de Argentina
+    - cron: '0 21 * * *'  # Las 18 PM de Argentina
+  workflow_dispatch:      # Permite que tú le des al botón cuando quieras
 
 jobs:
   build:
@@ -18,12 +19,13 @@ jobs:
           python-version: '3.9'
 
       - name: Instalar librerías
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install twikit
 
       - name: Ejecutar Bot
         env:
-          API_KEY: ${{ secrets.API_KEY }}
-          API_SECRET: ${{ secrets.API_SECRET }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
+          X_USERNAME: ${{ secrets.X_USERNAME }}
+          X_EMAIL: ${{ secrets.X_EMAIL }}
+          X_PASSWORD: ${{ secrets.X_PASSWORD }}
         run: python bot.py
